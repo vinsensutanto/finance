@@ -5,6 +5,7 @@ import com.example.finance.entity.Transaction
 import com.example.finance.entity.TransactionType
 import com.example.finance.repository.TransactionRepository
 import com.example.finance.service.BudgetService
+import com.example.finance.service.PaymentProcessor
 import com.example.finance.service.TransactionService
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDate
@@ -13,7 +14,8 @@ import java.time.LocalDate
 @RequestMapping("/api")
 class TransactionController (
     private val transactionService: TransactionService,
-    private val budgetService: BudgetService
+    private val budgetService: BudgetService,
+    private val paymentProcessor: PaymentProcessor
 ){
     @PostMapping("/transactions/expense")
     fun addExpense(
@@ -30,7 +32,12 @@ class TransactionController (
     ) = transactionService.addTransaction(name, category, amount, TransactionType.INCOME)
 
     @PostMapping("/payment")
-    fun pay(@RequestParam amount: Double) = transactionService.processPayment(amount)
+    fun pay(
+        @RequestParam amount: Double,
+        @RequestParam provider: String
+    ): String {
+        return paymentProcessor.process(amount, provider)
+    }
 
     @PostMapping("/budgets")
     fun setBudget(

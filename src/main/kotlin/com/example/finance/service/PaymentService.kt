@@ -4,4 +4,5 @@ import org.springframework.stereotype.Service
 
 interface PaymentService {
     fun pay(amount: Double): String
+    fun getProvider(): String
 }
